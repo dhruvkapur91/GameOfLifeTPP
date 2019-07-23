@@ -1,20 +1,27 @@
-import Cell.toCell
+import AliveCell.toCell
 import World.evolve
 import GameOfLifeSpec.fourDiagonalNeighbours
 import org.scalatest.FunSpec
 import org.scalatest.words.ShouldVerb
 import org.scalatest.Matchers._
 
-case class Cell(x: Int, y: Int)
+trait Cell {
+  val x: Int
+  val y: Int
 
-object Cell {
-  def toCell(position: (Int, Int)): Cell = Cell(position._1, position._2)
+  def toAlive: AliveCell = AliveCell(x, y)
+}
+
+case class AliveCell(x: Int, y: Int) extends Cell
+
+object AliveCell {
+  def toCell(position: (Int, Int)): AliveCell = AliveCell(position._1, position._2)
 }
 
 object World {
-  def evolve(world: Set[Cell]): Set[Cell] = {
+  def evolve(world: Set[AliveCell]): Set[AliveCell] = {
 
-    def neighbour(cell: Cell): Set[Cell] = world.filter(other => Math.abs(cell.x - other.x) <= 1 && Math.abs(cell.y - other.y) <= 1)
+    def neighbour(cell: Cell): Set[AliveCell] = world.filter(other => Math.abs(cell.x - other.x) <= 1 && Math.abs(cell.y - other.y) <= 1)
 
     def evolveOneCell(cell: Cell) = {
       val myWorld = neighbour(cell)
@@ -22,7 +29,7 @@ object World {
       val isNotOverPopulated = myWorld.size <= 4
       val shouldStayAlive = isSustainable && isNotOverPopulated
       if (shouldStayAlive) {
-        Some(cell)
+        Some(cell.toAlive)
       } else {
         None
       }
@@ -35,14 +42,14 @@ object World {
 
 class GameOfLifeSpec extends FunSpec with ShouldVerb {
 
-  val cellAtOrigin = Cell(0, 0)
-  val upperCell = Cell(0, 1)
-  val upperLeftCell = Cell(-1, 1)
-  val bottomRightCell = Cell(1, -1)
-  val upperRightCell = Cell(1, 1)
-  val rightCell = Cell(1, 0)
+  val cellAtOrigin = AliveCell(0, 0)
+  val upperCell = AliveCell(0, 1)
+  val upperLeftCell = AliveCell(-1, 1)
+  val bottomRightCell = AliveCell(1, -1)
+  val upperRightCell = AliveCell(1, 1)
+  val rightCell = AliveCell(1, 0)
 
-  val emptyWorld = Set.empty[Cell]
+  val emptyWorld = Set.empty[AliveCell]
 
 
   describe("Empty world") {
@@ -111,7 +118,7 @@ object GameOfLifeSpec {
     crossProduct(set, set)
   }
 
-  def fourDiagonalNeighbours: Set[Cell] = {
+  def fourDiagonalNeighbours: Set[AliveCell] = {
     val diagonalDeltas = Set(-1, 1)
     selfProduct(diagonalDeltas).map(toCell)
   }
