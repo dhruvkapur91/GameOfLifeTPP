@@ -35,6 +35,7 @@ object World {
     def neighbour(cell: Cell): Set[AliveCell] = world.filter(other => Math.abs(cell.x - other.x) <= 1 && Math.abs(cell.y - other.y) <= 1)
 
     def evolveOneCell(cell: Cell) = cell.evolve(neighbour(cell))
+
     world.flatMap(evolveOneCell)
   }
 }
