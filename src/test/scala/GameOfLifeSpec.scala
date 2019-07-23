@@ -10,9 +10,22 @@ trait Cell {
   val y: Int
 
   def toAlive: AliveCell = AliveCell(x, y)
+
+  def evolve(neighbourhood: Set[AliveCell]): Option[AliveCell]
 }
 
-case class AliveCell(x: Int, y: Int) extends Cell
+case class AliveCell(x: Int, y: Int) extends Cell {
+  override def evolve(neighbourhood: Set[AliveCell]): Option[AliveCell] = {
+    val isSustainable = neighbourhood.size > 2
+    val isNotOverPopulated = neighbourhood.size <= 4
+    val shouldStayAlive = isSustainable && isNotOverPopulated
+    if (shouldStayAlive) {
+      Some(this)
+    } else {
+      None
+    }
+  }
+}
 
 object AliveCell {
   def toCell(position: (Int, Int)): AliveCell = AliveCell(position._1, position._2)
@@ -23,18 +36,7 @@ object World {
 
     def neighbour(cell: Cell): Set[AliveCell] = world.filter(other => Math.abs(cell.x - other.x) <= 1 && Math.abs(cell.y - other.y) <= 1)
 
-    def evolveOneCell(cell: Cell) = {
-      val myWorld = neighbour(cell)
-      val isSustainable = myWorld.size > 2
-      val isNotOverPopulated = myWorld.size <= 4
-      val shouldStayAlive = isSustainable && isNotOverPopulated
-      if (shouldStayAlive) {
-        Some(cell.toAlive)
-      } else {
-        None
-      }
-    }
-
+    def evolveOneCell(cell: Cell) = cell.evolve(neighbour(cell))
     world.flatMap(evolveOneCell)
   }
 }
