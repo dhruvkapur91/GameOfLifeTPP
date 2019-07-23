@@ -1,10 +1,15 @@
+import World.evolve
 import org.scalatest.FunSpec
+
+case class Cell(x: Int, y: Int)
+
+object World {
+  def evolve(emptyWorld: Set[Cell]) = Set.empty[Cell]
+}
+
 
 class GameOfLifeSpec extends FunSpec {
 
-  case class Cell(x: Int, y: Int)
-
-  def evolve(emptyWorld: Set[Cell]) = Set.empty[Cell]
 
   describe("Empty world") {
     it("should remain empty") {
