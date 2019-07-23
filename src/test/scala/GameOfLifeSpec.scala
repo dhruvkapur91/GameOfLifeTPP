@@ -95,7 +95,7 @@ class GameOfLifeSpec extends FunSpec with ShouldVerb {
       val cellAtCenter = Cell(0, 0)
       val world = Set(cellAtCenter) ++ fourDiagonalNeighbours
       val newWorld = evolve(world)
-      assert(newWorld.equals(Set.empty))
+      newWorld should be(Set.empty)
     }
   }
 
