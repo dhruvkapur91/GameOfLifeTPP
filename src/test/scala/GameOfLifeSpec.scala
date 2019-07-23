@@ -12,10 +12,15 @@ object Cell {
 }
 
 object World {
-  def evolve(world: Set[Cell]): Set[Cell] = if (world.size > 2 && world.size < 4) {
-    Set(Cell(0, 0))
-  } else {
-    Set.empty[Cell]
+  def evolve(world: Set[Cell]): Set[Cell] = {
+    val isSustainable = world.size > 2
+    val isNotOverPopulated = world.size < 4
+    val shouldStayAlive = isSustainable && isNotOverPopulated
+    if (shouldStayAlive) {
+      Set(Cell(0, 0))
+    } else {
+      Set.empty[Cell]
+    }
   }
 }
 
