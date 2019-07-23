@@ -21,6 +21,14 @@ class GameOfLifeSpec extends FunSpec {
       val newWorld = evolve(world)
       assert(Set.empty[Cell].equals(newWorld))
     }
+
+    it("Cell with one neighbour also die of loneliness") {
+      val cellOne = Cell(0,0)
+      val cellTwo = Cell(0,1)
+      val world = Set(cellOne,cellTwo)
+      val newWorld = evolve(world)
+      assert(Set.empty[Cell].equals(newWorld))
+    }
   }
 
 
