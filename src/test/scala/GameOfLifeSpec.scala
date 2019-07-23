@@ -35,10 +35,18 @@ object World {
 
 class GameOfLifeSpec extends FunSpec with ShouldVerb {
 
+  val cellAtOrigin = Cell(0, 0)
+  val upperCell = Cell(0, 1)
+  val upperLeftCell = Cell(-1, 1)
+  val bottomRightCell = Cell(1, -1)
+  val upperRightCell = Cell(1, 1)
+  val rightCell = Cell(1, 0)
+
+  val emptyWorld = Set.empty[Cell]
+
 
   describe("Empty world") {
     it("should remain empty") {
-      val emptyWorld = Set.empty[Cell]
       val newWorld = evolve(emptyWorld)
       assert(emptyWorld.equals(newWorld))
     }
@@ -46,45 +54,34 @@ class GameOfLifeSpec extends FunSpec with ShouldVerb {
 
   describe("Underpopulated world") {
     it("Cell with no neighbours die of loneliness") {
-      val lonelyCell = Cell(0, 0)
+      val lonelyCell = cellAtOrigin
       val world = Set(lonelyCell)
       val newWorld = evolve(world)
-      assert(Set.empty[Cell].equals(newWorld))
+      assert(emptyWorld.equals(newWorld))
     }
 
     it("Cell with one neighbour also die of loneliness") {
-      val cellOne = Cell(0, 0)
-      val cellTwo = Cell(0, 1)
-      val world = Set(cellOne, cellTwo)
+      val world = Set(cellAtOrigin, upperCell)
       val newWorld = evolve(world)
-      assert(Set.empty[Cell].equals(newWorld))
+      assert(emptyWorld.equals(newWorld))
     }
   }
 
   describe("Sustainable development :) ") {
     it("A cell with 2 neighbours keeps living") {
-      val centerCell = Cell(0, 0)
-      val upperLeftCell = Cell(-1, 1)
-      val bottomRightCell = Cell(1, -1)
+      val centerCell = cellAtOrigin
       val world = Set(centerCell, upperLeftCell, bottomRightCell)
       val newWorld = evolve(world)
-      newWorld should be(Set(Cell(0, 0)))
+      newWorld should be(Set(cellAtOrigin))
     }
     it("A cell with 3 neighbours keeps living") {
-      val centerCell = Cell(0, 0)
-      val upperLeftCell = Cell(-1, 1)
-      val bottomRightCell = Cell(1, -1)
-      val upperRightCell = Cell(1, 1)
+      val centerCell = cellAtOrigin
       val world = Set(centerCell, upperLeftCell, bottomRightCell, upperRightCell)
       val newWorld = evolve(world)
-      newWorld should be(Set(Cell(0, 0)))
+      newWorld should be(Set(cellAtOrigin))
     }
     it("A world in where each cell has 3 neighbours does not change") {
-      val cellOne = Cell(0, 0)
-      val cellTwo = Cell(1, 0)
-      val cellThree = Cell(1, 1)
-      val cellFour = Cell(0, 1)
-      val world = Set(cellOne, cellTwo, cellThree, cellFour)
+      val world = Set(cellAtOrigin, rightCell, upperRightCell, upperCell)
       val nextWorld = evolve(world)
       nextWorld should be(world)
     }
@@ -92,8 +89,7 @@ class GameOfLifeSpec extends FunSpec with ShouldVerb {
 
   describe("Overpopulated world") {
     it("Cell with 4 neighbours dies") {
-      val cellAtCenter = Cell(0, 0)
-      val world = Set(cellAtCenter) ++ fourDiagonalNeighbours
+      val world = Set(cellAtOrigin) ++ fourDiagonalNeighbours
       val newWorld = evolve(world)
       newWorld should be(Set.empty)
     }
