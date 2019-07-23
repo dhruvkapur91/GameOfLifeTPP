@@ -1,8 +1,13 @@
+import Cell.toCell
 import World.evolve
 import GameOfLifeSpec.fourDiagonalNeighbours
 import org.scalatest.FunSpec
 
 case class Cell(x: Int, y: Int)
+
+object Cell {
+  def toCell(position: (Int, Int)): Cell = Cell(position._1, position._2)
+}
 
 object World {
   def evolve(emptyWorld: Set[Cell]) = Set.empty[Cell]
@@ -50,11 +55,20 @@ class GameOfLifeSpec extends FunSpec {
 }
 
 object GameOfLifeSpec {
+
+  def crossProduct[P, Q](first: Set[P], second: Set[Q]): Set[(P, Q)] = {
+    for {
+      a <- first
+      b <- second
+    } yield (a, b)
+  }
+
+  def selfProduct[T](set: Set[T]): Set[(T, T)] = {
+    crossProduct(set, set)
+  }
+
   def fourDiagonalNeighbours: Set[Cell] = {
     val diagonalDeltas = Set(-1, 1)
-    for {
-      x <- diagonalDeltas
-      y <- diagonalDeltas
-    } yield Cell(x, y)
+    selfProduct(diagonalDeltas).map(toCell)
   }
 }
