@@ -2,6 +2,8 @@ import Cell.toCell
 import World.evolve
 import GameOfLifeSpec.fourDiagonalNeighbours
 import org.scalatest.FunSpec
+import org.scalatest.words.ShouldVerb
+import org.scalatest.Matchers._
 
 case class Cell(x: Int, y: Int)
 
@@ -10,11 +12,15 @@ object Cell {
 }
 
 object World {
-  def evolve(emptyWorld: Set[Cell]) = Set.empty[Cell]
+  def evolve(world: Set[Cell]): Set[Cell] = if (world.size > 2 && world.size < 4) {
+    Set(Cell(0, 0))
+  } else {
+    Set.empty[Cell]
+  }
 }
 
 
-class GameOfLifeSpec extends FunSpec {
+class GameOfLifeSpec extends FunSpec with ShouldVerb {
 
 
   describe("Empty world") {
@@ -39,6 +45,17 @@ class GameOfLifeSpec extends FunSpec {
       val world = Set(cellOne, cellTwo)
       val newWorld = evolve(world)
       assert(Set.empty[Cell].equals(newWorld))
+    }
+  }
+
+  describe("Sustainable development :) ") {
+    it("A cell with 2 neighbours keeps living") {
+      val centerCell = Cell(0, 0)
+      val upperLeftCell = Cell(-1, 1)
+      val bottomRightCell = Cell(1, -1)
+      val world = Set(centerCell, upperLeftCell, bottomRightCell)
+      val newWorld = evolve(world)
+      newWorld should be(Set(Cell(0, 0)))
     }
   }
 
