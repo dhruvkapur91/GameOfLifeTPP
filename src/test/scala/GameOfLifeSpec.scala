@@ -25,18 +25,38 @@ case class AliveCell(x: Int, y: Int) extends Cell {
   }
 }
 
+case class DeadCell(x: Int, y: Int) extends Cell {
+  override def evolve(neighbourhood: Set[AliveCell]): Option[AliveCell] = {
+    if (neighbourhood.size == 3) {
+      Some(AliveCell(x, y))
+    } else {
+      None
+    }
+  }
+}
+
 object AliveCell {
   def toCell(position: (Int, Int)): AliveCell = AliveCell(position._1, position._2)
 }
 
 object World {
+
   def evolve(world: Set[AliveCell]): Set[AliveCell] = {
+
+    def potentialWorld = world.flatMap(cell => {
+      val myNeighbours = for {
+        x <- Set(-1, 0, 1)
+        y <- Set(-1, 0, 1)
+        if !world.contains(AliveCell(cell.x + x, cell.y + y))
+      } yield DeadCell(cell.x + x, cell.y + y)
+      myNeighbours ++ Set(cell)
+    })
 
     def neighbour(cell: Cell): Set[AliveCell] = world.filter(other => Math.abs(cell.x - other.x) <= 1 && Math.abs(cell.y - other.y) <= 1)
 
     def evolveOneCell(cell: Cell) = cell.evolve(neighbour(cell))
 
-    world.flatMap(evolveOneCell)
+    potentialWorld.flatMap(evolveOneCell)
   }
 }
 
@@ -49,6 +69,7 @@ class GameOfLifeSpec extends FunSpec with ShouldVerb {
   val bottomRightCell = AliveCell(1, -1)
   val upperRightCell = AliveCell(1, 1)
   val rightCell = AliveCell(1, 0)
+  val lowerLeftCell = AliveCell(-1, -1)
 
   val emptyWorld = Set.empty[AliveCell]
 
@@ -86,7 +107,8 @@ class GameOfLifeSpec extends FunSpec with ShouldVerb {
       val centerCell = cellAtOrigin
       val world = Set(centerCell, upperLeftCell, bottomRightCell, upperRightCell)
       val newWorld = evolve(world)
-      newWorld should be(Set(cellAtOrigin))
+      newWorld should contain(cellAtOrigin)
+      //      newWorld should be(Set(cellAtOrigin))
     }
     it("A world in where each cell has 3 neighbours does not change") {
       val world = Set(cellAtOrigin, rightCell, upperRightCell, upperCell)
@@ -99,7 +121,15 @@ class GameOfLifeSpec extends FunSpec with ShouldVerb {
     it("Cell with 4 neighbours dies") {
       val world = Set(cellAtOrigin) ++ fourDiagonalNeighbours
       val newWorld = evolve(world)
-      newWorld should be(Set.empty)
+      newWorld should not contain cellAtOrigin
+    }
+  }
+
+  describe("Reproduction") {
+    it("A dead cell with 3 alive neighbours should come to life") {
+      val world = Set(upperRightCell, lowerLeftCell, upperLeftCell)
+      val nextWorld = evolve(world)
+      nextWorld should be(Set(cellAtOrigin))
     }
   }
 
