@@ -16,16 +16,16 @@ class GameOfLifeSpec extends FunSpec {
 
   describe("Underpopulated world") {
     it("Cell with no neighbours die of loneliness") {
-      val lonelyCell = Cell(0,0)
+      val lonelyCell = Cell(0, 0)
       val world = Set(lonelyCell)
       val newWorld = evolve(world)
       assert(Set.empty[Cell].equals(newWorld))
     }
 
     it("Cell with one neighbour also die of loneliness") {
-      val cellOne = Cell(0,0)
-      val cellTwo = Cell(0,1)
-      val world = Set(cellOne,cellTwo)
+      val cellOne = Cell(0, 0)
+      val cellTwo = Cell(0, 1)
+      val world = Set(cellOne, cellTwo)
       val newWorld = evolve(world)
       assert(Set.empty[Cell].equals(newWorld))
     }
