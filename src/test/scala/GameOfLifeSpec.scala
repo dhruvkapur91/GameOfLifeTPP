@@ -51,10 +51,10 @@ class GameOfLifeSpec extends FunSpec {
 
 object GameOfLifeSpec {
   def fourDiagonalNeighbours: Set[Cell] = {
-    val topLeftNeighbour = Cell(-1, 1)
-    val topRightNeighbour = Cell(1, 1)
-    val bottomRightNeighbour = Cell(1, -1)
-    val bottomLeftNeighbour = Cell(-1, -1)
-    Set(topLeftNeighbour, topRightNeighbour, bottomLeftNeighbour, bottomRightNeighbour)
+    val diagonalDeltas = Set(-1, 1)
+    for {
+      x <- diagonalDeltas
+      y <- diagonalDeltas
+    } yield Cell(x, y)
   }
 }
