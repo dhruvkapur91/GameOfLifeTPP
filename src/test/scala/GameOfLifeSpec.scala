@@ -14,7 +14,7 @@ object Cell {
 object World {
   def evolve(world: Set[Cell]): Set[Cell] = {
 
-    def neighbour(cell: Cell): Set[Cell] = world
+    def neighbour(cell: Cell): Set[Cell] = world.filter(other => Math.abs(cell.x - other.x) <= 1 && Math.abs(cell.y - other.y) <= 1)
 
     def evolveOneCell(cell: Cell) = {
       val myWorld = neighbour(cell)
@@ -22,7 +22,7 @@ object World {
       val isNotOverPopulated = myWorld.size <= 4
       val shouldStayAlive = isSustainable && isNotOverPopulated
       if (shouldStayAlive) {
-        Some(Cell(0, 0))
+        Some(cell)
       } else {
         None
       }
@@ -78,6 +78,15 @@ class GameOfLifeSpec extends FunSpec with ShouldVerb {
       val world = Set(centerCell, upperLeftCell, bottomRightCell, upperRightCell)
       val newWorld = evolve(world)
       newWorld should be(Set(Cell(0, 0)))
+    }
+    it("A world in where each cell has 3 neighbours does not change") {
+      val cellOne = Cell(0, 0)
+      val cellTwo = Cell(1, 0)
+      val cellThree = Cell(1, 1)
+      val cellFour = Cell(0, 1)
+      val world = Set(cellOne, cellTwo, cellThree, cellFour)
+      val nextWorld = evolve(world)
+      nextWorld should be(world)
     }
   }
 
