@@ -5,7 +5,10 @@ import org.scalatest.FunSpec
 import org.scalatest.words.ShouldVerb
 import org.scalatest.Matchers._
 
-case class Cell(x: Int, y: Int)
+case class Cell(x: Int, y: Int) {
+  def isNeighbour(cell: Cell): Boolean = false
+
+}
 
 object Cell {
   def toCell(position: (Int, Int)): Cell = Cell(position._1, position._2)
@@ -20,6 +23,14 @@ object World {
       Set(Cell(0, 0))
     } else {
       Set.empty[Cell]
+    }
+  }
+}
+
+class CellSpec extends FunSpec with ShouldVerb {
+  describe("Neighbourhood") {
+    it("A cell should not be its own neighbour") {
+      assert(!Cell(0, 0).isNeighbour(Cell(0, 0)))
     }
   }
 }
