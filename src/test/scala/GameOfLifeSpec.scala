@@ -13,14 +13,19 @@ object Cell {
 
 object World {
   def evolve(world: Set[Cell]): Set[Cell] = {
-    val isSustainable = world.size > 2
-    val isNotOverPopulated = world.size <= 4
-    val shouldStayAlive = isSustainable && isNotOverPopulated
-    if (shouldStayAlive) {
-      Set(Cell(0, 0))
-    } else {
-      Set.empty[Cell]
+
+    def evolveOneCell(cell: Cell) = {
+      val isSustainable = world.size > 2
+      val isNotOverPopulated = world.size <= 4
+      val shouldStayAlive = isSustainable && isNotOverPopulated
+      if (shouldStayAlive) {
+        Some(Cell(0, 0))
+      } else {
+        None
+      }
     }
+
+    world.flatMap(evolveOneCell)
   }
 }
 
