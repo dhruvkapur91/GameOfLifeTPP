@@ -9,8 +9,6 @@ trait Cell {
   val x: Int
   val y: Int
 
-  def toAlive: AliveCell = AliveCell(x, y)
-
   def evolve(neighbourhood: Set[AliveCell]): Option[AliveCell]
 }
 
