@@ -31,5 +31,18 @@ class GameOfLifeSpec extends FunSpec {
     }
   }
 
+  describe("Overpopulated world") {
+    it("Cell with 4 neighbours dies") {
+      val cellAtCenter = Cell(0, 0)
+      val topLeftNeighbour = Cell(-1, 1)
+      val topRightNeighbour = Cell(1, 1)
+      val bottomRightNeighbour = Cell(1, -1)
+      val bottomLeftNeighbour = Cell(-1, -1)
+      val world = Set(cellAtCenter, topLeftNeighbour, topRightNeighbour, bottomLeftNeighbour, bottomRightNeighbour)
+      val newWorld = evolve(world)
+      assert(newWorld.equals(Set.empty))
+    }
+  }
+
 
 }
