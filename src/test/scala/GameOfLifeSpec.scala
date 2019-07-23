@@ -14,9 +14,12 @@ object Cell {
 object World {
   def evolve(world: Set[Cell]): Set[Cell] = {
 
+    def neighbour(cell: Cell): Set[Cell] = world
+
     def evolveOneCell(cell: Cell) = {
-      val isSustainable = world.size > 2
-      val isNotOverPopulated = world.size <= 4
+      val myWorld = neighbour(cell)
+      val isSustainable = myWorld.size > 2
+      val isNotOverPopulated = myWorld.size <= 4
       val shouldStayAlive = isSustainable && isNotOverPopulated
       if (shouldStayAlive) {
         Some(Cell(0, 0))
