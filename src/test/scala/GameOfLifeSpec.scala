@@ -1,4 +1,5 @@
 import World.evolve
+import GameOfLifeSpec.fourDiagonalNeighbours
 import org.scalatest.FunSpec
 
 case class Cell(x: Int, y: Int)
@@ -39,15 +40,21 @@ class GameOfLifeSpec extends FunSpec {
   describe("Overpopulated world") {
     it("Cell with 4 neighbours dies") {
       val cellAtCenter = Cell(0, 0)
-      val topLeftNeighbour = Cell(-1, 1)
-      val topRightNeighbour = Cell(1, 1)
-      val bottomRightNeighbour = Cell(1, -1)
-      val bottomLeftNeighbour = Cell(-1, -1)
-      val world = Set(cellAtCenter, topLeftNeighbour, topRightNeighbour, bottomLeftNeighbour, bottomRightNeighbour)
+      val world = Set(cellAtCenter) ++ fourDiagonalNeighbours
       val newWorld = evolve(world)
       assert(newWorld.equals(Set.empty))
     }
   }
 
 
+}
+
+object GameOfLifeSpec {
+  def fourDiagonalNeighbours: Set[Cell] = {
+    val topLeftNeighbour = Cell(-1, 1)
+    val topRightNeighbour = Cell(1, 1)
+    val bottomRightNeighbour = Cell(1, -1)
+    val bottomLeftNeighbour = Cell(-1, -1)
+    Set(topLeftNeighbour, topRightNeighbour, bottomLeftNeighbour, bottomRightNeighbour)
+  }
 }
